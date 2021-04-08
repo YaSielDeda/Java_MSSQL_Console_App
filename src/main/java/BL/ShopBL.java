@@ -1,60 +1,61 @@
 package BL;
 
-import DAO.ProductDAO;
+import DAO.ShopDAO;
 import Entities.Product;
+import Entities.Shop;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class ProductBL extends ProductDAO implements GenericBL <Product>{
-    ProductDAO productDAO = new ProductDAO();
+public class ShopBL extends ShopDAO implements GenericBL <Shop> {
+    ShopDAO shopDAO = new ShopDAO();
 
     @Override
-    public void Add(Product product){
+    public void Add(Shop shop){
         try {
-            productDAO.Add(product);
+            shopDAO.Add(shop);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<Product> getAll(){
-        List<Product> products = null;
+    public List<Shop> getAll(){
+        List<Shop> shops = null;
 
         try {
-            products = productDAO.getAll();
+            shops = shopDAO.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return products;
+        return shops;
     }
 
     @Override
-    public Product getById(int id){
-        Product product = null;
+    public Shop getById(int id){
+        Shop shop = null;
 
         try {
-            product = productDAO.getById(id);
+            shop = shopDAO.getById(id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  product;
+        return shop;
     }
 
     @Override
-    public void Update(Product product){
+    public void Update(Shop shop){
         try {
-            productDAO.Update(product);
+            shopDAO.Update(shop);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void Delete(Product product){
+    public void Delete(Shop shop){
         try {
-            productDAO.Delete(product);
+            shopDAO.Delete(shop);
         } catch (SQLException e) {
             e.printStackTrace();
         }
