@@ -5,6 +5,7 @@ import BL.ProductBL;
 import DAO.ProductDAO;
 import Entities.Category;
 import Entities.Product;
+import service.Auth;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,12 +16,35 @@ import java.util.Scanner;
 public class PL {
     static Boolean cicle = true;
 
+    public static Boolean Loggining(String login, String password){
+        Auth auth = new Auth();
+
+        try {
+            return auth.TryAuth(login, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         int Switcher = 0;
         Scanner in = new Scanner(System.in);
         Boolean exit = false;
+        Boolean loggining = false;
 
         while(exit == false){
+            while(loggining == false){
+                System.out.print("Login: ");
+                String login = in.next();
+                System.out.print("Password: ");
+                String password = in.next();
+                loggining = Loggining(login, password);
+                if (!loggining)
+                    System.out.println("Incorrect. Try again.");
+                else
+                    System.out.println("Hi, " + login);
+            }
             Menu();
             Switcher = in.nextInt();
             switch (Switcher){
