@@ -1,6 +1,6 @@
 package DAO;
 
-import BL.ConnectionObject;
+import service.ConnectionObject;
 import Entities.Product;
 
 import java.sql.*;
@@ -90,7 +90,7 @@ public class ProductDAO extends ConnectionObject implements GenericDAO <Product>
                 product.setInStock(resultSet.getInt("InStock"));
             }
         } catch (SQLException e){
-            e.printStackTrace();
+            throw new SQLException("The product with this id doesn't exist!");
         } finally {
             if (preparedStatement != null){
                 preparedStatement.close();

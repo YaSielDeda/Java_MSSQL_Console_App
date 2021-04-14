@@ -1,7 +1,6 @@
 package DAO;
 
-import BL.ConnectionObject;
-import Entities.Category;
+import service.ConnectionObject;
 import Entities.Shop;
 
 import java.sql.*;

@@ -1,8 +1,7 @@
 package DAO;
 
-import BL.ConnectionObject;
+import service.ConnectionObject;
 import Entities.Category;
-import Entities.Product;
 
 import java.sql.*;
 import java.util.ArrayList;

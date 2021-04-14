@@ -1,31 +1,21 @@
-import BL.CategoryBL;
-import BL.ConnectionObject;
 import BL.GenericBL;
 import BL.ProductBL;
-import DAO.ProductDAO;
-import Entities.Category;
 import Entities.Product;
 import service.Auth;
+import service.CryptWorker;
+import service.serializations.ProductSerializationWorker;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+//AdminPassword9
+
 public class PL {
     static Boolean cicle = true;
-
-    public static Boolean Loggining(String login, String password){
-        Auth auth = new Auth();
-
-        try {
-            return auth.TryAuth(login, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     public static void main(String[] args) {
         int Switcher = 0;
@@ -34,16 +24,10 @@ public class PL {
         Boolean loggining = false;
 
         while(exit == false){
-            while(loggining == false){
-                System.out.print("Login: ");
-                String login = in.next();
-                System.out.print("Password: ");
-                String password = in.next();
-                loggining = Loggining(login, password);
-                if (!loggining)
-                    System.out.println("Incorrect. Try again.");
-                else
-                    System.out.println("Hi, " + login);
+            try {
+                loggining = Verification(in, loggining);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
             }
             Menu();
             Switcher = in.nextInt();
@@ -77,11 +61,42 @@ public class PL {
         }
     }
 
+    public static Boolean Loggining(String login, String password){
+        Auth auth = new Auth();
+
+        try {
+            return auth.TryAuth(login, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static Boolean Verification(Scanner in, Boolean loggining) throws NoSuchAlgorithmException {
+        while(loggining == false){
+            System.out.print("Login: ");
+            String login = in.next();
+            System.out.print("Password: ");
+            String password = in.next();
+
+            CryptWorker cw = new CryptWorker();
+            password = cw.Crypt(password);
+
+            loggining = Loggining(login, password);
+            if (!loggining)
+                System.out.println("Incorrect. Try again.");
+            else
+                System.out.println("Hi, " + login);
+        }
+        return loggining;
+    }
+
     static private void ProductSwitcher(){
         int Switcher = 0;
         GenericBL productBL = new ProductBL();
         Scanner in = new Scanner(System.in);
         Boolean exit = false;
+        Product product = null;
 
         while(exit == false){
             ProductMenu();
@@ -97,7 +112,6 @@ public class PL {
                     }
                     break;
                 case 2:
-                    Product product = null;
                     System.out.println("To add new product write into console information following this format:\n" +
                             "Name_of_product, Category_of_product, Cost, Product_amount_in_stock\n" +
                             "[information must be split by comma and space]\n" +
@@ -117,12 +131,48 @@ public class PL {
                             break;
                         }
                         catch (Exception e){
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                         }
                     }
                     break;
+                case 3:
+                    ProductSerializationWorker psw = null;
+                    System.out.print("Enter the product ID (0 to cancel): ");
+                    StringBuilder id = new StringBuilder(in.next());
+                    while(cicle == true){
+                        if(isDigit(id.toString())){
+                            if(id.toString().equals("0")){
+                                exit = true;
+                                break;
+                            }
+                            try{
+                                psw = new ProductSerializationWorker();
+                                System.out.println(psw.SerializeProduct((Product) productBL.getById(Integer.parseInt(id.toString()))));
+                                exit = true;
+                                break;
+                            }catch (Exception e){
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                        id.setLength(0);
+                        id.append(in.next());
+                    }
+                    break;
+                default:
+                    System.out.println("You trying to enter wrong data");
+                    break;
             }
         }
+    }
+
+    private static Boolean isDigit(String str){
+        try{
+            Integer.parseInt(str);
+            return true;
+        }catch (NumberFormatException e){
+            System.out.println("Inputted value isn't a number!");
+        }
+        return false;
     }
 
     static private void Menu(){

@@ -39,7 +39,7 @@ public class ProductBL extends ProductDAO implements GenericBL <Product>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  product;
+        return product;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package BL;
+package service;
 
 import Entities.Seller;
 
