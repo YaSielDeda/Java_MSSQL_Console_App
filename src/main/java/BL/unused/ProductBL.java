@@ -1,12 +1,13 @@
-package BL;
+package BL.unused;
 
-import DAO.ProductDAO;
+import BL.GenericBL;
+import DAO.unused.ProductDAO;
 import Entities.Product;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class ProductBL extends ProductDAO implements GenericBL <Product>{
+public class ProductBL extends ProductDAO implements GenericBL<Product> {
     ProductDAO productDAO = new ProductDAO();
 
     @Override

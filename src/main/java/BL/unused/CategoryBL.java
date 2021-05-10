@@ -1,14 +1,14 @@
-package BL;
+package BL.unused;
 
-import DAO.CategoryDAO;
+import BL.GenericBL;
+import DAO.unused.CategoryDAO;
 import Entities.Category;
-import Entities.Product;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryBL extends CategoryDAO implements GenericBL <Category> {
+public class CategoryBL extends CategoryDAO implements GenericBL<Category> {
     CategoryDAO categoryDAO = new CategoryDAO();
 
     @Override

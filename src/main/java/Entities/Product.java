@@ -9,8 +9,8 @@ public class Product {
 
     public Product(){ }
 
-    public Product(int ID, String name, int categoryID, double cost, int inStock) {
-        this.ID = ID;
+    public Product(String name, int categoryID, double cost, int inStock) {
+        //this.ID = ID;
         Name = name;
         CategoryID = categoryID;
         Cost = cost;
@@ -55,16 +55,5 @@ public class Product {
 
     public void setInStock(int inStock) {
         InStock = inStock;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "ID=" + ID +
-                ", Name='" + Name + '\'' +
-                ", CategoryID=" + CategoryID +
-                ", Cost=" + Cost +
-                ", InStock=" + InStock +
-                '}';
     }
 }

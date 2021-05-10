@@ -1,5 +1,6 @@
-package DAO;
+package DAO.unused;
 
+import DAO.GenericDAO;
 import service.ConnectionObject;
 import Entities.Shop;
 
@@ -7,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopDAO extends ConnectionObject implements GenericDAO <Shop> {
+public class ShopDAO extends ConnectionObject implements GenericDAO<Shop> {
     Connection connection = getConnection();
 
     @Override

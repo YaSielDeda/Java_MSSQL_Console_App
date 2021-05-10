@@ -46,36 +46,4 @@ public class ReceiptPosition {
     public void setProductID(int productID) {
         ProductID = productID;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ReceiptPosition that = (ReceiptPosition) o;
-
-        if (ID != that.ID) return false;
-        if (ReceiptID != that.ReceiptID) return false;
-        if (ProductQuantity != that.ProductQuantity) return false;
-        return ProductID == that.ProductID;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = ID;
-        result = 31 * result + ReceiptID;
-        result = 31 * result + ProductQuantity;
-        result = 31 * result + ProductID;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ReceiptPosition{" +
-                "ID=" + ID +
-                ", ReceiptID=" + ReceiptID +
-                ", ProductQuantity=" + ProductQuantity +
-                ", ProductID=" + ProductID +
-                '}';
-    }
 }

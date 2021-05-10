@@ -1,27 +1,25 @@
-package DAO;
+package DAO.unused;
 
+import DAO.GenericDAO;
 import service.ConnectionObject;
-import Entities.Product;
+import Entities.Category;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDAO extends ConnectionObject implements GenericDAO <Product> {
-    private Connection connection = getConnection();
+public class CategoryDAO extends ConnectionObject implements GenericDAO<Category> {
+    Connection connection = getConnection();
 
     @Override
-    public void Add(Product product) throws SQLException {
+    public void Add(Category category) throws SQLException {
         PreparedStatement preparedStatement = null;
-        String sql = "INSERT INTO Products (Name, CategoryID, Cost, InStock) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Categories (Name) VALUES (?)";
 
         try {
             preparedStatement = connection.prepareStatement(sql);
 
-            preparedStatement.setString(1, product.Name);
-            preparedStatement.setInt(2, product.CategoryID);
-            preparedStatement.setDouble(3, product.Cost);
-            preparedStatement.setInt(4, product.InStock);
+            preparedStatement.setString(1, category.Name);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -37,25 +35,22 @@ public class ProductDAO extends ConnectionObject implements GenericDAO <Product>
     }
 
     @Override
-    public List<Product> getAll() throws SQLException {
+    public List getAll() throws SQLException {
         Statement statement = null;
-        String sql = "SELECT * FROM Products";
-        List<Product> productList = new ArrayList<>();
+        String sql = "SELECT * FROM Categories";
+        List<Category> categoryList = new ArrayList<>();
 
         try{
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                Product product = new Product();
+                Category category = new Category();
 
-                product.setID(resultSet.getInt("ID"));
-                product.setName(resultSet.getString("Name"));
-                product.setCategoryID(resultSet.getInt("CategoryID"));
-                product.setCost(resultSet.getInt("Cost"));
-                product.setInStock(resultSet.getInt("InStock"));
+                category.setID(resultSet.getInt("ID"));
+                category.setName(resultSet.getString("Name"));
 
-                productList.add(product);
+                categoryList.add(category);
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -68,14 +63,14 @@ public class ProductDAO extends ConnectionObject implements GenericDAO <Product>
             }
         }
 
-        return productList;
+        return categoryList;
     }
 
     @Override
-    public Product getById(int id) throws SQLException {
+    public Category getById(int id) throws SQLException {
         PreparedStatement preparedStatement = null;
-        String sql = "SELECT * FROM Products WHERE ID = ?";
-        Product product = new Product();
+        String sql = "SELECT * FROM Categories WHERE ID = ?";
+        Category category = new Category();
 
         try{
             preparedStatement = connection.prepareStatement(sql);
@@ -83,14 +78,11 @@ public class ProductDAO extends ConnectionObject implements GenericDAO <Product>
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                product.setID(resultSet.getInt("ID"));
-                product.setName(resultSet.getString("Name"));
-                product.setCategoryID(resultSet.getInt("CategoryID"));
-                product.setCost(resultSet.getInt("Cost"));
-                product.setInStock(resultSet.getInt("InStock"));
+                category.setID(resultSet.getInt("ID"));
+                category.setName(resultSet.getString("Name"));
             }
         } catch (SQLException e){
-            throw new SQLException("The product with this id doesn't exist!");
+            e.printStackTrace();
         } finally {
             if (preparedStatement != null){
                 preparedStatement.close();
@@ -100,21 +92,18 @@ public class ProductDAO extends ConnectionObject implements GenericDAO <Product>
             }
         }
 
-        return product;
+        return category;
     }
 
     @Override
-    public void Update(Product product) throws SQLException {
+    public void Update(Category category) throws SQLException {
         PreparedStatement preparedStatement = null;
-        String sql = "UPDATE Products SET Name=?, CategoryID=?, Cost=?, InStock=? WHERE Name=?";
+        String sql = "UPDATE Categories SET Name=? WHERE ID=?";
 
         try{
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, product.getName());
-            preparedStatement.setInt(2, product.getCategoryID());
-            preparedStatement.setDouble(3, product.getCost());
-            preparedStatement.setInt(4, product.getInStock());
-            preparedStatement.setString(5, product.getName());
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.setInt(2, category.getID());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e){
@@ -130,13 +119,13 @@ public class ProductDAO extends ConnectionObject implements GenericDAO <Product>
     }
 
     @Override
-    public void Delete(Product product) throws SQLException {
+    public void Delete(Category category) throws SQLException {
         PreparedStatement preparedStatement = null;
-        String sql = "DELETE FROM Products WHERE Name = ?";
+        String sql = "DELETE FROM Categories WHERE Name = ?";
 
         try{
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, product.getName());
+            preparedStatement.setString(1, category.getName());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e){
