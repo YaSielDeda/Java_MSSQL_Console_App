@@ -1,7 +1,8 @@
-package service.serializations;
+package service;
 
 import Entities.Category;
 import Entities.Product;
+import Entities.Seller;
 import Entities.Shop;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -15,7 +16,7 @@ public class SerializationWorker {
 
     public SerializationWorker() {}
 
-    public String SerializeProduct(Category product) throws JsonProcessingException {
+    public String SerializeProduct(Product product) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         om.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.ANY);
@@ -23,7 +24,7 @@ public class SerializationWorker {
         return jsonResult;
     }
 
-    public String SerializeShop(Category shop) throws JsonProcessingException {
+    public String SerializeShop(Shop shop) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         om.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.ANY);
@@ -36,6 +37,14 @@ public class SerializationWorker {
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         om.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.ANY);
         String jsonResult = om.writerWithDefaultPrettyPrinter().writeValueAsString(category);
+        return jsonResult;
+    }
+
+    public String SerializeSeller(Seller seller) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        om.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.ANY);
+        String jsonResult = om.writerWithDefaultPrettyPrinter().writeValueAsString(seller);
         return jsonResult;
     }
 }

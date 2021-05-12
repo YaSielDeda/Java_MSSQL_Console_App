@@ -8,8 +8,8 @@ public class ReceiptPosition {
 
     public ReceiptPosition() { }
 
-    public ReceiptPosition(int ID, int receiptID, int productQuantity, int productID) {
-        this.ID = ID;
+    public ReceiptPosition(int receiptID, int productQuantity, int productID) {
+        //this.ID = ID;
         ReceiptID = receiptID;
         ProductQuantity = productQuantity;
         ProductID = productID;

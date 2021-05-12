@@ -6,8 +6,8 @@ public class Seller {
 
     public Seller(){ }
 
-    public Seller(int ID, String name) {
-        this.ID = ID;
+    public Seller(String name) {
+//        this.ID = ID;
         Name = name;
     }
 
