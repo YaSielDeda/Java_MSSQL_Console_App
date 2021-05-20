@@ -1,6 +1,5 @@
 //AdminPassword9
 
-import BL.GenericBL;
 import BL.ProductBLh;
 import Entities.Product;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -162,109 +161,126 @@ public class PL {
                             "3. Cost\n" +
                             "0. Cancel");
                     while (cicle == true){
-                        in.nextLine();
-                        String option = in.next();
+                        List<Product> products = CriteriaSearch(sw, productBLh);
 
-                        if(!isDigit(option)){
-                            System.out.println("Incorrect input");
-                            exit = true;
+                        if(products.isEmpty()){
+                            System.out.println("The program could not find any product with this criteria");
                             break;
                         }
 
-                        in.nextLine();
-                        Session session = productBLh.factory.openSession();
-                        Criteria criteria = session.createCriteria(Product.class);
-                        String ProductString = in.next();
-                        switch(Integer.valueOf(option)){
-                            case 0:
-                                exit = true;
-                                break;
-                            case 1:
-                                System.out.println("Enter the ID: ");
-                                criteria.add(Restrictions.eq("ID", Integer.valueOf(ProductString.toString())));
-                                break;
-                            case 2:
-                                System.out.println("Enter the name: ");
-                                criteria.add(Restrictions.eq("Name", ProductString.toString()));
-                                break;
-                            case 3:
-                                System.out.println("Enter the cost: ");
-                                criteria.add(Restrictions.eq("Cost", Double.valueOf(ProductString.toString())));
-                                break;
-                            default:
-                                System.out.println("The inputted option doesn't exist!");
-                                break;
-                        }
-                        List<Product> products = criteria.list();
-                        for(Product p: products){
+                        for (Product p : products) {
                             try {
                                 sw.SerializeProduct(p);
                                 System.out.println(sw.SerializeProduct((Product) productBLh.getById(p.ID)));
                             } catch (JsonProcessingException e) {
                                 e.printStackTrace();
-                            } catch (SQLException e){
+                            } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
-                    System.out.print("Enter the product ID (0 to cancel): ");
-                    id = new StringBuilder(in.next());
-                    while(cicle == true){
-                        if(isDigit(id.toString())){
-                            if(id.toString().equals("0")){
-                                exit = true;
-                                break;
-                            }
-                            try{
-                                sw = new SerializationWorker();
-                                if(productBLh.getById(Integer.parseInt(id.toString())) != null)
-                                    System.out.println(sw.SerializeProduct((Product) productBLh.getById(Integer.parseInt(id.toString()))));
-                                else
-                                    System.out.println("The product doesn't exist!");
-                                exit = true;
-                                break;
-                            }catch (Exception e){
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                        id.setLength(0);
-                        id.append(in.next());
-                    }
                     break;
                 case 4:
-                    System.out.print("Enter the product ID (0 to cancel): ");
-                    id = new StringBuilder(in.next());
+                    System.out.println("On what basis to search?\n" +
+                            "1. ID\n" +
+                            "2. Name\n" +
+                            "3. Cost\n" +
+                            "0. Cancel");
                     while (cicle == true){
-//                        if(isDigit(id.toString())){
-//                            if(id.toString().equals("0")){
-//                                exit = true;
-//                                break;
-//                            }
-                            try{
-                                System.out.print("To update the product, write into console information, following this format:\n" +
-                                        "Name_of_product, Category_of_product, Cost, Product_amount_in_stock\n" +
-                                        "[information must be split by comma and space]\n" +
-                                        "Type 0 for exit\n");
-                                String ProductString = in.next();
-                                List<String> StringsList = new ArrayList<String>(Arrays.asList(ProductString.split(", ")));
-                                product = new Product(StringsList.get(0), Integer.valueOf(StringsList.get(1)), Double.valueOf(StringsList.get(2)), Integer.valueOf(StringsList.get(3)));
-                                productBLh.Update(product);
-                                System.out.println("The product is updated!");
+
+                        List<Product> products = CriteriaSearch(sw, productBLh);
+
+                        if(products.size() == 0){
+                            System.out.println("The program could not find any product with this criteria");
+                            break;
+                        }
+                        else if(products.size() > 1){
+                            System.out.println("There is some products with this criteria, enter the ID of product you want to update: ");
+
+                            for (Product p : products) {
+                                try {
+                                    sw.SerializeProduct(p);
+                                    System.out.println(sw.SerializeProduct((Product) productBLh.getById(p.ID)));
+                                } catch (JsonProcessingException e) {
+                                    e.printStackTrace();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            id = new StringBuilder(in.next());
+                        }
+                        else{
+                            id = new StringBuilder(products.get(0).getID());
+                        }
+
+                        try{
+                            System.out.print("To update the product, write into console information, following this format:\n" +
+                                    "Name_of_product, Category_of_product, Cost, Product_amount_in_stock\n" +
+                                    "[information must be split by comma and space]\n" +
+                                    "Type 0 for exit\n");
+
+                            String ProductString = in.next();
+
+                            if(ProductString.length() == 1 && ProductString.equals("0")){
                                 exit = true;
                                 break;
+                            }
+
+                            List<String> StringsList = new ArrayList<String>(Arrays.asList(ProductString.split(", ")));
+                            product = new Product(StringsList.get(0), Integer.valueOf(StringsList.get(1)), Double.valueOf(StringsList.get(2)), Integer.valueOf(StringsList.get(3)));
+                            product.setID(Integer.parseInt(id.toString()));
+                            productBLh.Update(product);
+                            System.out.println("The product is updated!");
+                            exit = true;
+                            break;
                             }catch (Exception e){
                                 System.out.println(e.getMessage());
                             }
                         }
                         id.setLength(0);
-                        id.append(in.next());
-//                    }
                     break;
                 default:
                     System.out.println("You trying to enter wrong data");
                     break;
             }
         }
+    }
+
+    private static List<Product> CriteriaSearch(SerializationWorker sw, ProductBLh productBLh) {
+        String option = in.next();
+
+        if (!isDigit(option)) {
+            System.out.println("Incorrect input");
+            return new ArrayList<>();
+        }
+
+        Session session = productBLh.factory.openSession();
+        Criteria criteria = session.createCriteria(Product.class);
+        String ProductString = null;
+        switch (Integer.valueOf(option)) {
+            case 0:
+                return null;
+            case 1:
+                System.out.println("Enter the ID: ");
+                ProductString = in.next();
+                criteria.add(Restrictions.eq("ID", Integer.valueOf(ProductString.toString())));
+                break;
+            case 2:
+                System.out.println("Enter the name: ");
+                ProductString = in.next();
+                criteria.add(Restrictions.eq("Name", ProductString.toString()));
+                break;
+            case 3:
+                System.out.println("Enter the cost: ");
+                ProductString = in.next();
+                criteria.add(Restrictions.eq("Cost", Double.valueOf(ProductString.toString())));
+                break;
+            default:
+                System.out.println("The inputted option doesn't exist!");
+                break;
+        }
+        List<Product> products = criteria.list();
+        return products;
     }
 
     private static Boolean isDigit(String str){
@@ -290,7 +306,7 @@ public class PL {
                 "1.Show all existing products\n" +
                 "2.Add new\n" +
                 "3.Show info about product\n" +
-                "4.Update info by id\n" +
+                "4.Update product\n" +
                 "5.Delete by name\n" +
                 "0.Back");
     }
